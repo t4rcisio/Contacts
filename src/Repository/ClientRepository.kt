@@ -1,9 +1,32 @@
 package Repository
 
+import Entity.ClientEntity
+
 class ClientRepository {
 
-    fun save(name : String, phone: String, birthday: String, mail: String,cpf: String,addr: String){
+    companion object{
+
+        private var clientsList : MutableList<ClientEntity> = ArrayList()
+
+        fun save(client: ClientEntity){
+            clientsList.add(client)
+        }
+        fun remove(client: ClientEntity){
+            var index = 0
+            for(i in clientsList){
+                if(i.cpf == client.cpf){
+                    clientsList.removeAt(index)
+                }
+                index++
+            }
+        }
+
+        fun getClientList() : List<ClientEntity>{
+            return clientsList
+        }
 
     }
+
+
 
 }

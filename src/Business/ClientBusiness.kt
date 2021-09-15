@@ -1,14 +1,14 @@
 package Business
 
+import Entity.ClientEntity
+import Repository.ClientRepository
+
 class ClientBusiness {
 
-    fun checkCPF(cpf: String,level: Int) : Boolean{
-        var max:Int = 11
-        var end : Int = 1
-        if(level == 1){
-            max = 10
-            end = 2
-        }
+    private fun checkCPF(cpf: String,level: Int) : Boolean{
+        var max:Int = 11 - level
+        var end : Int = 1 + level
+
         var total: Int = 0
         var div: Int
 
@@ -21,39 +21,58 @@ class ClientBusiness {
 
         if( div == 10)
             div = 0
-        return div == cpf[(cpf.length -(end))].digitToInt()
+
+        return if(div == cpf[(cpf.length -(end))].digitToInt() && level == 0){
+            checkCPF(cpf,1)
+        }else{
+            div == cpf[(cpf.length -(end))].digitToInt()
+        }
     }
-    fun checkName(name: String): Boolean{
+    private fun checkName(name: String): Boolean{
         return name.any()
     }
-    fun checkPhone(phone: String): Boolean{
+    private fun checkPhone(phone: String): Boolean{
         return phone.any()
     }
-    fun checkBirthday(birthday: String): Boolean{
+    private fun checkBirthday(birthday: String): Boolean{
         return birthday.any()
     }
-    fun checkMail(mail: String): Boolean{
+    private fun checkMail(mail: String): Boolean{
         var p = 0;
         return mail.indexOf("@") != -1
 
     }
-    fun checkAddr(addr: String): Boolean{
+    private fun checkAddr(addr: String): Boolean{
         return addr.any()
     }
 
-    fun validate(name : String, phone: String, birthday: String, mail: String,cpf: String,addr: String){
-       if( checkCPF(cpf,1)
-           && checkCPF(cpf,2)
-           && checkAddr(addr)
-           && checkBirthday(birthday)
-           && checkPhone(phone)
-           && checkName(name)
-           && checkMail(mail)){
-
-       }
+    private fun validate(client: ClientEntity) : Boolean{
+        return ( checkCPF(client.cpf,0)
+           && checkAddr(client.addr)
+           && checkBirthday(client.birthday)
+           && checkPhone(client.phone)
+           && checkName(client.name)
+           && checkMail(client.mail))
 
     }
 
+    fun save(name : String, phone: String, birthday: String, mail: String,cpf: String,addr: String){
+        val client = ClientEntity(name,phone,birthday,mail,cpf,addr)
+        if(validate(client)){
+            ClientRepository.save(client)
+        }
+    }
+    fun remove(cpf: String){
+        val client = ClientEntity(cpf = cpf)
+        if(checkCPF(cpf,0))
+            ClientRepository.remove(client)
+    }
+    fun getList(): List<ClientEntity>{
+        return  ClientRepository.getClientList()
+    }
+    fun getDescription(): String{
+        return "Total de contatos: ${ClientRepository.getClientList().size}"
+    }
 
 
 }
