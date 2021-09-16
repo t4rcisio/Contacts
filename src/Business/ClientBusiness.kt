@@ -2,10 +2,21 @@ package Business
 
 import Entity.ClientEntity
 import Repository.ClientRepository
+import java.awt.Color;
+import javax.swing.BorderFactory
+import javax.swing.JTextField
+import javax.swing.border.Border
 
 class ClientBusiness {
+    private var mTextLabel : JTextField = JTextField()
+    private var border: Border = BorderFactory.createLineBorder(Color.RED, 1);
 
-    private fun checkCPF(cpf: String,level: Int) : Boolean{
+    fun getBorder(): Border{
+        return border
+    }
+
+    fun checkCPF(cpf: String, level :Int) : Boolean{
+        if(cpf.any()){
         var max:Int = 11 - level
         var end : Int = 1 + level
 
@@ -13,7 +24,7 @@ class ClientBusiness {
         var div: Int
 
         for(i in 0..(cpf.length -(end+1))){
-            println("Total = $total + ${cpf[i].digitToInt()} * $max")
+            //println("Total = $total + ${cpf[i].digitToInt()} * $max")
             total += cpf[i].digitToInt()*max
             max--
         }
@@ -21,28 +32,31 @@ class ClientBusiness {
 
         if( div == 10)
             div = 0
-
-        return if(div == cpf[(cpf.length -(end))].digitToInt() && level == 0){
-            checkCPF(cpf,1)
+        println(cpf[cpf.length -end])
+        return if(div == cpf[cpf.length -end].digitToInt() && level == 0){
+            checkCPF(cpf,level+1)
         }else{
             div == cpf[(cpf.length -(end))].digitToInt()
         }
+        }else{
+            return false
+        }
     }
-    private fun checkName(name: String): Boolean{
+    fun checkName(name: String): Boolean{
         return name.any()
     }
-    private fun checkPhone(phone: String): Boolean{
+    fun checkPhone(phone: String): Boolean{
         return phone.any()
     }
-    private fun checkBirthday(birthday: String): Boolean{
+    fun checkBirthday(birthday: String): Boolean{
         return birthday.any()
     }
-    private fun checkMail(mail: String): Boolean{
+    fun checkMail(mail: String): Boolean{
         var p = 0;
         return mail.indexOf("@") != -1
 
     }
-    private fun checkAddr(addr: String): Boolean{
+    fun checkAddr(addr: String): Boolean{
         return addr.any()
     }
 
@@ -71,7 +85,10 @@ class ClientBusiness {
         return  ClientRepository.getClientList()
     }
     fun getDescription(): String{
-        return "Total de contatos: ${ClientRepository.getClientList().size}"
+        return if(ClientRepository.getClientList().isEmpty()){
+            return "Não há contatos salvos"
+        }
+        else "Total de contatos: ${ClientRepository.getClientList().size}"
     }
 
 
