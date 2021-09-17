@@ -64,10 +64,16 @@ public class NewClientForm extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 ClientEntity client = new ClientEntity(Name.getText(), Phone.getText(), Birthday.getText(), Mail.getText(), CPF.getText(), Addr.getText());
                 if(mClientBusiness.chekBox(client)) {
-                    mClientBusiness.save(client);
-                    new MainForm();
-                    dispose();
+                    if(!mClientBusiness.verifyCPF(client.getCpf())){
+                        mClientBusiness.save(client);
+                        new MainForm();
+                        dispose();}else{
+
+                        ErrorAlert.setForeground(Color.RED);
+                        ErrorAlert.setText("User CPF already exists");
+                    }
                 }else{
+                    ErrorAlert.setForeground(Color.RED);
                     ErrorAlert.setText("Missing information");
                 }
             }

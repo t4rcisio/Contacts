@@ -22,6 +22,16 @@ class ClientRepository {
             }
         }
 
+        fun cpfIsReady(cpf:String): Boolean{
+            for(i in clientsList){
+                if(i.cpf == cpf){
+                    return true
+                    break;
+                }
+            }
+            return false
+        }
+
         fun getClientList() : List<ClientEntity>{
             return clientsList
         }

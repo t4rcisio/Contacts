@@ -42,6 +42,9 @@ class ClientBusiness {
             return false
         }
     }
+    fun verifyCPF(cpf :String): Boolean{
+       return ClientRepository.cpfIsReady(cpf)
+    }
     fun checkName(name: String): Boolean{
         return name.any()
     }

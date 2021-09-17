@@ -65,10 +65,13 @@ public class MainForm extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 try {Object cpf = contactsTable.getValueAt(contactsTable.getSelectedRow(), 2);
-                    mClientBusiness.remove(cpf.toString());
-                    loadContacts();
-                    ErrorRemove.setText("");
+                    if(!cpf.toString().isEmpty()) {
+                        mClientBusiness.remove(cpf.toString());
+                        loadContacts();
+                        ErrorRemove.setText("");
+                    }
                 } catch (Exception p){
+                    ErrorRemove.setForeground(Color.RED);
                     ErrorRemove.setText("Select a valid contact!");
                 }
 
