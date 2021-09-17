@@ -16,6 +16,7 @@ public class MainForm extends JFrame {
     private JButton removeContactButton;
     private JTable contactsTable;
     private JLabel ContactCounter;
+    private JLabel ErrorRemove;
 
     private ClientBusiness mClientBusiness;
 
@@ -36,15 +37,14 @@ public class MainForm extends JFrame {
     private void loadContacts(){
        List<ClientEntity> list =  mClientBusiness.getList();
        String [] columnNames = {"Name","Phone", "CPF"};
-       DefaultTableModel table = new DefaultTableModel(new Object[0][0], columnNames);
-       int i = 0;
+       DefaultTableModel table = new DefaultTableModel(new Object[0][0][0], columnNames);
+
        for(ClientEntity client : list){
            Object[] row = new Object[3];
-           row[i] = client.getName();
-           row[i+1] = client.getPhone();
-           row[i+2] = client.getCpf();
+           row[0] = client.getName();
+           row[1] = client.getPhone();
+           row[2] = client.getCpf();
            table.addRow(row);
-           i++;
        }
        contactsTable.clearSelection();
        contactsTable.setModel(table);
@@ -63,6 +63,15 @@ public class MainForm extends JFrame {
         removeContactButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                try {Object cpf = contactsTable.getValueAt(contactsTable.getSelectedRow(), 2);
+                    mClientBusiness.remove(cpf.toString());
+                    loadContacts();
+                    ErrorRemove.setText("");
+                } catch (Exception p){
+                    ErrorRemove.setText("Select a valid contact!");
+                }
+
 
             }
         });

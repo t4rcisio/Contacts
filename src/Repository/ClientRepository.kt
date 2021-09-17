@@ -16,6 +16,7 @@ class ClientRepository {
             for(i in clientsList){
                 if(i.cpf == client.cpf){
                     clientsList.removeAt(index)
+                    break;
                 }
                 index++
             }

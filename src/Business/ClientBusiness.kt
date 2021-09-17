@@ -15,7 +15,7 @@ class ClientBusiness {
         return border
     }
 
-    fun checkCPF(cpf: String, level :Int) : Boolean{
+    fun checkCPF(cpf: String, level :Int = 0) : Boolean{
         if(cpf.any()){
         var max:Int = 11 - level
         var end : Int = 1 + level
@@ -25,7 +25,7 @@ class ClientBusiness {
 
         for(i in 0..(cpf.length -(end+1))){
             //println("Total = $total + ${cpf[i].digitToInt()} * $max")
-            total += cpf[i].digitToInt()*max
+            try {total += cpf[i].digitToInt()*max}catch (e : Exception){ return false}
             max--
         }
         div = ((total*10)%11)
@@ -34,7 +34,7 @@ class ClientBusiness {
             div = 0
         println(cpf[cpf.length -end])
         return if(div == cpf[cpf.length -end].digitToInt() && level == 0){
-            checkCPF(cpf,level+1)
+            checkCPF(cpf,1)
         }else{
             div == cpf[(cpf.length -(end))].digitToInt()
         }
@@ -60,25 +60,35 @@ class ClientBusiness {
         return addr.any()
     }
 
-    private fun validate(client: ClientEntity) : Boolean{
-        return ( checkCPF(client.cpf,0)
+     fun save(client: ClientEntity){
+       if ( checkCPF(client.cpf)
            && checkAddr(client.addr)
            && checkBirthday(client.birthday)
            && checkPhone(client.phone)
            && checkName(client.name)
-           && checkMail(client.mail))
+           && checkMail(client.mail)){
+           ClientRepository.save(client)
+
+       }
 
     }
 
-    fun save(name : String, phone: String, birthday: String, mail: String,cpf: String,addr: String){
-        val client = ClientEntity(name,phone,birthday,mail,cpf,addr)
-        if(validate(client)){
-            ClientRepository.save(client)
+    fun chekBox(client: ClientEntity): Boolean{
+        if ( checkCPF(client.cpf)
+            && checkAddr(client.addr)
+            && checkBirthday(client.birthday)
+            && checkPhone(client.phone)
+            && checkName(client.name)
+            && checkMail(client.mail)){
+            return true
         }
+        return false
+
     }
+
     fun remove(cpf: String){
         val client = ClientEntity(cpf = cpf)
-        if(checkCPF(cpf,0))
+        if(checkCPF(cpf))
             ClientRepository.remove(client)
     }
     fun getList(): List<ClientEntity>{

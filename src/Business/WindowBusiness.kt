@@ -3,11 +3,13 @@ package Business
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.BorderFactory
+import javax.swing.JLabel
 import javax.swing.JTextField
 
 class WindowBusiness {
     private var mClientBusiness : ClientBusiness = ClientBusiness()
     private val labelName = arrayOf("CPF","Name","Addr","Phone","Mail","Birthday")
+    private var clientComplete: Boolean = false
 
     private fun setName(vectorlabel: Array< out JTextField>){
         var i = 0
@@ -19,7 +21,7 @@ class WindowBusiness {
 
     private fun muxFunction(functionName: String, value: String) : Boolean{
         when(functionName){
-            labelName[0] -> return mClientBusiness.checkCPF(value,0)
+            labelName[0] -> return mClientBusiness.checkCPF(value)
             labelName[1] -> return mClientBusiness.checkName(value)
             labelName[2] -> return mClientBusiness.checkAddr(value)
             labelName[3] -> return mClientBusiness.checkPhone(value)
@@ -27,6 +29,13 @@ class WindowBusiness {
             labelName[5] -> return mClientBusiness.checkBirthday(value)
         }
         return false
+    }
+    fun ErrorLabel(errJLabel: JLabel){
+        if(!clientComplete)
+            errJLabel.text = "Warning! One or more boxes contains errors"
+        else{
+            errJLabel.text = ""
+        }
     }
 
     fun chekTextField(vararg vectorlabel: JTextField){
@@ -37,9 +46,11 @@ class WindowBusiness {
                     //println(labelBox.name)
                     if (muxFunction(labelBox.name,labelBox.text)) {
                         labelBox.setBorder(BorderFactory.createEmptyBorder())
+                        clientComplete = true
 
                     } else {
                         labelBox.setBorder(mClientBusiness.getBorder())
+                        clientComplete = false
                     }
                 }
 

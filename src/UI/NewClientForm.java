@@ -2,6 +2,7 @@ package UI;
 
 import Business.ClientBusiness;
 import Business.WindowBusiness;
+import Entity.ClientEntity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +28,7 @@ public class NewClientForm extends JFrame {
     private JTextField Name;
     private JLabel cpfLabel;
     private JLabel addressLabel;
+    private JLabel ErrorAlert;
 
     private  ClientBusiness mClientBusiness;
     private WindowBusiness mWindowBusness;
@@ -43,6 +45,7 @@ public class NewClientForm extends JFrame {
 
 
     mWindowBusness.chekTextField(CPF,Name,Addr,Phone,Mail,Birthday);
+    mWindowBusness.ErrorLabel(ErrorAlert);
 
     }
 
@@ -59,9 +62,14 @@ public class NewClientForm extends JFrame {
         salveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                mClientBusiness.save(Name.getText(), Phone.getText(), Birthday.getText(), Mail.getText(), CPF.getText(), Addr.getText());
-
+                ClientEntity client = new ClientEntity(Name.getText(), Phone.getText(), Birthday.getText(), Mail.getText(), CPF.getText(), Addr.getText());
+                if(mClientBusiness.chekBox(client)) {
+                    mClientBusiness.save(client);
+                    new MainForm();
+                    dispose();
+                }else{
+                    ErrorAlert.setText("Missing information");
+                }
             }
         });
     }
